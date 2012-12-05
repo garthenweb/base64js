@@ -1,0 +1,194 @@
+<!doctpye html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>Base64</title>
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="author" content="Jannick Garthen">
+		<style>
+			body {
+				width: 95%;
+				max-width: 500px;
+				margin: 50px auto;
+				text-align: center;
+				font-family: Arial, sans-serif;
+			}
+			
+			h1 {
+				font-size: 50px;
+				line-height: 1.1em;
+				color: midnightblue;
+				margin: 0 0 50px;
+			}
+			
+			#dropzone {
+				padding: 100px 0;
+				color: midnightblue;
+				font: 30px/2em Tahoma, sans-serif;
+				text-transform: uppercase;
+				background: tomato;
+				outline: 5px dashed midnightblue;
+				cursor: pointer;
+			}
+			input[type=file]{
+				margin-top: 25px;
+			}
+			
+			#output {
+				margin-top: 25px;
+				border-top: 1px solid midnightblue;
+				display: block;
+			}
+			
+			ul {
+				margin: 0;
+				padding: 25px 0;
+				list-style: none;
+				border-bottom: 1px solid midnightblue;
+			}
+			
+			ul:last-child {
+				border: none;
+			}
+			
+			h2 {
+				font: 18px/24px Arial, Helvetica, sans-serif;
+				display: inline;
+				color: tomato;
+			}
+			
+			textarea, iframe, video, img, embed {
+				margin: 10px auto 0 auto;
+				display: block;
+				padding: 10px;
+				max-width: 100%;
+			}
+			
+			textarea {
+				height: 200px;
+				width: 100%;
+			}
+			
+			img, embed, video {
+				padding: 10px 0;
+			}
+			
+			video {
+				height: 32px;
+			}
+		</style>
+	</head>
+	<body>
+		<h1>encode files to base64-URL</h1>
+		<div id="dropzone">Dropzone</div>
+		<input type="file" id="inputFile" webkitdirectory directory>
+		<output id="output"></output>
+		<!--[if IE ]>
+		<script src="//ajax.googleapis.com/ajax/libs/chrome-frame/1.0.2/CFInstall.min.js"></script>
+		<script>window.attachEvent("onload",function(){CFInstall.check({mode:"overlay"})})</script>
+		<![endif]-->
+		<script>
+			(function() {
+				'use strict';
+				var isChrome = (/Chrome/gi).test(navigator.userAgent);
+				var isFF = (/Firefox/gi).test(navigator.userAgent);
+				// check if browser is supported
+				if(!(isChrome || isFF)) {
+					// if IE show Chromeframe message
+					var msg = (/MSIE/gi).test(navigator.userAgent) ? 'Sry, you are using a not supported browser. Please use Chrome, Firefox or install the Chromeframe plugin!' : 'Sry, you are using a not supported browser. Please use Chrome or Firefox!';
+					alert(msg);
+					document.body.innerHTML = '<h1>Download a supported and more powerfull browser.</h1><ul><li><a href="http://www.google.de/chrome/">Chrome</a></li><li><a href="http://www.mozilla.org/de/firefox/new/">Firefox</li></ul>';
+					return;
+				}
+				var output = document.getElementById('output');
+				var dropzone = document.getElementById('dropzone');
+				var inputFile = document.getElementById('inputFile');
+
+				function onDragOver(e) {
+					e.stopPropagation();
+					e.preventDefault();
+					e.dataTransfer.dropEffect = 'move';
+				}
+				
+				function getFiles(e) {
+					e.stopPropagation();
+					e.preventDefault();
+					// get files wherter is dragdropped or not
+					var files = e.dataTransfer ? e.dataTransfer.files : e.target.files;
+					var output = document.getElementById('output');
+					var maxFileSize = 1024 * 500; // 500KB
+					
+					// if more than 9 files then show a message
+					if(files.length > 10 && !confirm('You try to encode ' + files.length + ' files. This process can take some time! Continue?')) return;
+					
+					// ask to delete old files
+					if(output.innerHTML !== '' && confirm('Delete old files?')) output.innerHTML = '';
+					
+					// iterate by files
+					for(var i = 0,file; file = files[i]; i++){
+						var html='';
+						// only read if fileSize issn't do large
+						if(file.size <= maxFileSize) {
+							var reader = new FileReader();
+							// onload write html
+							reader.onload = (function(file) {
+								return function(e) {
+									var url = e.target.result;
+									
+									html = '<ul><li><h2>' + file.name + '</h2> (' + getBytes(file.size) + ')</li>';
+									if(isChrome) {
+										// thumbnails only for Chrome
+										if(file.type.match('application/*')) html += '<li><embed width="100%" height="100%" name="plugin" src="' + url + '" type="' + file.type + '"></li>';
+										if(file.type.match('audio/*')) html += '<li><video controls name="media" src="' + url + '"></video></li>';
+										if(file.type.match('image/*')) html += '<li><img src="' + url + '" alt="' + file.fileName + '"></li>';
+									}
+									html 	+= '<li><textarea>' + url + '</textarea></li></ul>';
+									output.innerHTML += html;
+								}
+							})(file);
+							// read as URL
+							reader.readAsDataURL(file);
+						} else {
+							html = '<ul><li><h2>' + file.name + '</h2> (' + getBytes(file.size) + ')</li>';
+							html += '<li>Filesize is to large!</li></ul>';
+							output.innerHTML += html;
+						}
+					}
+				}
+				
+				function getBytes(size) {
+					var i, unit, size=size||0;
+					for(i = 0; size>1024; i++) size = size/1024;
+					
+					switch(i) {
+						case 0:
+							unit = 'B';
+							break;
+						case 1:
+							unit = 'KB';
+							break;
+						case 2:
+							unit = 'MB';
+							break;
+						case 3:
+							unit = 'GB';
+							break;
+						default:
+							return size + 'B';
+					}
+					return size.toFixed(1) + ' ' + unit;
+				}
+				
+				function dropClick(e) {
+					e.preventDefault();
+					alert('Drop files here or pick hole directories by clicking the button below.');
+				}
+				
+				dropzone.addEventListener('dragover', onDragOver, false);
+				dropzone.addEventListener('drop', getFiles, false);
+				dropzone.addEventListener('click', dropClick, false);
+				inputFile.addEventListener('change', getFiles, false);
+			})();
+		</script>
+	</body>
+</html>
