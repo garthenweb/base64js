@@ -1,0 +1,19 @@
+{
+  "name": "base64js",
+  "version": "1.0.0",
+  "description": "Drag&drop user interface for a base64 string generator in the browser",
+  "main": "index.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/garthenweb/base64js.git"
+  },
+  "author": "Jannick Garthen",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/garthenweb/base64js/issues"
+  },
+  "homepage": "https://garthenweb.github.io/base64js"
+}
