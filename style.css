@@ -1,0 +1,70 @@
+body {
+  width: 95%;
+  max-width: 500px;
+  margin: 50px auto;
+  text-align: center;
+  font-family: Arial, sans-serif;
+}
+
+h1 {
+  font-size: 50px;
+  line-height: 1.1em;
+  color: midnightblue;
+  margin: 0 0 50px;
+}
+
+#dropzone {
+  padding: 100px 0;
+  color: midnightblue;
+  font: 30px/2em Tahoma, sans-serif;
+  text-transform: uppercase;
+  background: tomato;
+  outline: 5px dashed midnightblue;
+  cursor: pointer;
+}
+input[type=file]{
+  margin-top: 25px;
+}
+
+#output {
+  margin-top: 25px;
+  border-top: 1px solid midnightblue;
+  display: block;
+}
+
+ul {
+  margin: 0;
+  padding: 25px 0;
+  list-style: none;
+  border-bottom: 1px solid midnightblue;
+}
+
+ul:last-child {
+  border: none;
+}
+
+h2 {
+  font: 18px/24px Arial, Helvetica, sans-serif;
+  display: inline;
+  color: tomato;
+}
+
+textarea, iframe, video, img, embed {
+  margin: 10px auto 0 auto;
+  display: block;
+  padding: 10px;
+  max-width: 100%;
+}
+
+textarea {
+  height: 200px;
+  width: 100%;
+}
+
+img, embed, video {
+  padding: 10px 0;
+}
+
+video {
+  height: 32px;
+}
