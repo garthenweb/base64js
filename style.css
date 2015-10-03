@@ -68,3 +68,14 @@ img, embed, video {
 video {
   height: 32px;
 }
+
+.ribbon {
+  position: absolute;
+  top: 0;
+  right: 0;
+  border: 0;
+  margin: 0;
+  padding: 0;
+  width: 149px;
+  height: 149px;
+}
